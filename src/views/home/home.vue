@@ -3,13 +3,14 @@
     <nav-bar class="navbar-home">
         <template v-slot:center>购物街</template>
     </nav-bar>
+    <tab-control :titles="['流行', '新品', '热款']" class="tabCalss" v-show="tabShow" @tabClick="tabClick" ref="homeTabControl1"></tab-control>
     <back-to-top @click.native="toTop" v-show="isShowBack"></back-to-top>
     <betterScroll class="wrapper" ref="scroll" :probe-type="3" @scroll="contentScroll" :pull-up-load="true" @pullUp="pullUp">
         <template v-slot>
-            <home-swiper :banners="banners"></home-swiper>
+            <home-swiper :banners="banners" @swiperImageLoad="swiperImageLoad"></home-swiper>
             <home-recommend :recommends="recommends"></home-recommend>
             <home-hot :recommends="recommends"></home-hot>
-            <home-tab-control class="home-tab-control" @tabClick="tabClick"></home-tab-control>
+            <tab-control :titles="['流行', '新品', '热款']" @tabClick="tabClick" ref="homeTabControl2"></tab-control>
             <goodsList :goods="goods[currentType].list"></goodsList>
         </template>
     </betterScroll>
@@ -26,10 +27,13 @@ import {
 import homeSwiper from "./homeComponents/homeSwiper";
 import homeRecommend from "./homeComponents/homeRecommend";
 import homeHot from "./homeComponents/homeHot";
-import homeTabControl from "./homeComponents/homeTabControl";
+import tabControl from "components/common/tabControl/tabControl";
 // import homeGoodsData from "./homeComponents/homeGoods";
 import goodsList from "components/content/goodsList/goodsList";
 import betterScroll from "components/common/betterScroll/betterScroll";
+import {
+    debounce
+} from "common/util.js";
 export default {
     name: "home",
     data() {
@@ -52,6 +56,8 @@ export default {
             },
             currentType: "pop",
             isShowBack: false,
+            taboffsetTop: 0,
+            tabShow: false,
         };
     },
     components: {
@@ -59,7 +65,7 @@ export default {
         homeSwiper,
         homeRecommend,
         homeHot,
-        homeTabControl,
+        tabControl,
         // homeGoodsData,
         goodsList,
         betterScroll,
@@ -87,17 +93,20 @@ export default {
                     this.currentType = "sell";
                     break;
             }
+
+            this.$refs.homeTabControl1.currentIndex = index;
+            this.$refs.homeTabControl2.currentIndex = index;
         },
         toTop() {
             this.$refs.scroll.scroll.scrollTo(0, 0, 1000);
         },
         contentScroll(position) {
             this.isShowBack = -position.y > 1000 ? true : false;
-            // console.log(position);
+            this.tabShow = -position.y + 40 > this.taboffsetTop;
         },
         pullUp() {
             this.getHomeGoodsData(this.currentType);
-            this.$refs.scroll.scroll.refresh();
+            // this.$refs.scroll.refresh();
         },
 
         // 网络请求相关的方法
@@ -120,6 +129,20 @@ export default {
                 // console.log(this.goods[type].list);
             });
         },
+        swiperImageLoad() {
+            this.taboffsetTop = this.$refs.homeTabControl2.$el.offsetTop;
+        },
+    },
+    mounted() {
+        // 1.监听图片加载以及防抖
+        const refresh = debounce(this.$refs.scroll.refresh, 100);
+        this.$bus.$on("itemImgLoad", () => {
+            // this.$refs.scroll.refresh();
+            refresh();
+        });
+        // 2. 获取homeTabControl的offsetTop值
+
+        // $el获取组件元素
     },
 };
 </script>
@@ -127,23 +150,22 @@ export default {
 <style scoped>
 #home {
     position: relative;
-
-    height: 100vh;
     padding-top: 40px;
+    height: 100vh;
 }
 
 .navbar-home {
     position: fixed;
-    top: 0;
     left: 0;
     right: 0;
-    z-index: 1;
+    top: 0;
+    z-index: 9;
     background-color: deeppink;
     color: #fff;
 }
 
 .wrapper {
-    height: calc(100% - 89px);
+    height: calc(100% - 49px);
 }
 
 /*兼容性不好 虽然可以实现控制栏在滚动屏幕时固定
@@ -152,4 +174,14 @@ export default {
     top: 40px;
 
 }*/
+
+.tabCalss {
+    overflow: hidden;
+    position: absolute;
+    top: 40px;
+    left: 0;
+    right: 0;
+    z-index: 9;
+    background-color: #fff;
+}
 </style>

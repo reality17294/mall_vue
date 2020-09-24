@@ -1,5 +1,5 @@
 <template>
-<div class="wrapper">
+<div>
     <div class="content">
         <slot></slot>
     </div>
@@ -28,6 +28,9 @@ export default {
     methods: {
         sendData() {
             this.$emit("moreData");
+        },
+        refresh() {
+            this.scroll.refresh();
         },
     },
     mounted() {
