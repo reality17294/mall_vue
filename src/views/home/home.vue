@@ -58,6 +58,7 @@ export default {
             isShowBack: false,
             taboffsetTop: 0,
             tabShow: false,
+            saveY: 0,
         };
     },
     components: {
@@ -143,6 +144,15 @@ export default {
         // 2. 获取homeTabControl的offsetTop值
 
         // $el获取组件元素
+    },
+
+    //离开首页再返回首页保证内容不变
+    activated() {
+        this.$refs.scroll.refresh();
+        this.$refs.scroll.scroll.scrollTo(0, this.saveY, 0);
+    },
+    deactivated() {
+        this.saveY = this.$refs.scroll.scroll.y;
     },
 };
 </script>

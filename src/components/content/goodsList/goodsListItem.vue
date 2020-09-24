@@ -1,8 +1,7 @@
 <template>
-<div class="home-goods-item">
-    <a :href="items.link">
-        <img :src="items.show.img" alt @load="imgLoad" />
-    </a>
+<div class="home-goods-item" @click="itemClick">
+    <img :src="items.show.img" alt @load="imgLoad" />
+
     <div class="context">
         <p>{{ items.title }}</p>
         <span>{{ items.price }}</span>
@@ -13,6 +12,7 @@
 <script>
 export default {
     name: "",
+
     props: {
         items: {
             type: Object,
@@ -24,6 +24,9 @@ export default {
     methods: {
         imgLoad() {
             this.$bus.$emit("itemImgLoad");
+        },
+        itemClick() {
+            this.$router.push("/detail/" + this.items.iid);
         },
     },
 };
