@@ -1,60 +1,76 @@
 <template>
-<div class="home-goods-item" @click="itemClick">
-    <img :src="items.show.img" alt @load="imgLoad" />
+    <div class="goods-item" @click="itemClick">
+        <img :src="showImg" alt @load="imgLoad" />
 
-    <div class="context">
-        <p>{{ items.title }}</p>
-        <span>{{ items.price }}</span>
+        <div class="context">
+            <p>{{ items.title }}</p>
+            <span>{{ items.price }}</span>
+        </div>
     </div>
-</div>
 </template>
 
 <script>
-export default {
-    name: "",
+    export default {
+        name: "",
 
-    props: {
-        items: {
-            type: Object,
-            default () {
-                return {};
+        props: {
+            items: {
+                type: Object,
+                default () {
+                    return {};
+                },
             },
         },
-    },
-    methods: {
-        imgLoad() {
-            this.$bus.$emit("itemImgLoad");
+        computed: {
+            showImg() {
+                return this.items.image || this.items.show.img
+            }
         },
-        itemClick() {
-            this.$router.push("/detail/" + this.items.iid);
+        methods: {
+            imgLoad() {
+
+                // 当在详情页引用时，图片加载完不需要向首页发送事件
+                if (this.$route.path.indexOf('/home')) {
+                    this.$bus.$emit("detailItemImgLoad");
+                } else if (this.$route.path.indexOf('/detail')) {
+                    this.$bus.$emit("homeItemImgLoad");
+                }
+            },
+            itemClick() {
+                if (this.items.item_id) {
+                    this.$router.push("/detail/" + this.items.item_id);
+                } else {
+                    this.$router.push("/detail/" + this.items.iid);
+
+                }
+            },
         },
-    },
-};
+    };
 </script>
 
 <style scoped>
-.home-goods-item {
-    width: 50%;
-    padding: 5px;
-    text-align: center;
-}
+    .goods-item {
+        width: 50%;
+        padding: 5px;
+        text-align: center;
+    }
 
-.home-goods-item img {
-    width: 100%;
-    border-radius: 5px;
-}
+    .goods-item img {
+        width: 100%;
+        border-radius: 5px;
+    }
 
-.context {
-    font-size: 8px;
-}
+    .context {
+        font-size: 8px;
+    }
 
-.context p {
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-}
+    .context p {
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+    }
 
-.context span {
-    color: red;
-}
+    .context span {
+        color: red;
+    }
 </style>
