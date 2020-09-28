@@ -1,5 +1,6 @@
 <template>
     <div class="cartItem">
+        <!-- {{product}}{{$store.state.num}} -->
         <div class="cartButton">
             <cart-button @click.native="checkedChange" :is-checked="product.checked">
             </cart-button>
@@ -34,11 +35,13 @@
         props: {
             product: {
                 type: Object,
+                default () {
+                    return {}
+                }
             }
         },
         methods: {
             checkedChange() {
-                console.log(1111);
                 this.$store.dispatch('checkChange', this.product)
                 // this.product.checked = !this.product.checked;
                 // this.check = this.product.checked

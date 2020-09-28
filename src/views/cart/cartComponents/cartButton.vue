@@ -7,12 +7,17 @@
 <script>
     export default {
         name: '',
+
+
         props: {
             isChecked: {
                 type: Boolean
             },
 
         },
+
+
+
 
     }
 </script>
@@ -26,5 +31,6 @@
 
     .check {
         background-color: red;
+
     }
 </style>

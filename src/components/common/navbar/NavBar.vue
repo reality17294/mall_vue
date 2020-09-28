@@ -21,7 +21,6 @@ export default {
 <style scoped>
 .nav-bar {
     display: flex;
-
     height: 40px;
     line-height: 40px;
     text-align: center;

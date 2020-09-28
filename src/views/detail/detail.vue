@@ -26,7 +26,6 @@
             <detail-recommend ref="recommend"></detail-recommend>
         </better-scroll>
         <detail-bottom-bar @addToCart="addCart"></detail-bottom-bar>
-
     </div>
 </template>
 
@@ -65,7 +64,7 @@
             detailCommentInfo,
             detailRecommend,
             detailBottomBar,
-            betterScroll
+            betterScroll,
         },
         data() {
             return {
@@ -81,7 +80,8 @@
                 commentInfo: {},
                 moveOffseTop: [],
                 product: {},
-                getMoveOffseTop: null
+                getMoveOffseTop: null,
+                toastShow: true
             };
         },
         created() {
@@ -155,7 +155,10 @@
 
             },
             addCart() {
-                this.$store.dispatch('addCart', this.product)
+                this.$store.dispatch('addCart', this.product).then(res => {
+                    console.log(this.$toast);
+                    this.$toast.show(res)
+                })
             }
         },
     };
