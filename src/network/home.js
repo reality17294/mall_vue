@@ -6,12 +6,12 @@ import {
 
 export function getHomeData() {
   return request({
-    url: "/api/z8/home/multidata",
+    url: "/api/w6/home/multidata",
   })
 }
 export function getHomeGoodsData(type, page) {
   return request({
-    url: "/api/z8/home/data",
+    url: "/api/w6/home/data",
     params: {
       type,
       page

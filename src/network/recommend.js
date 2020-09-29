@@ -4,6 +4,6 @@ import {
 
 export function getRecommendData() {
     return request({
-        url: '/api/z8/recommend'
+        url: '/api/w6/recommend'
     })
 }
