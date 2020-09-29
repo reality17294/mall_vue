@@ -156,7 +156,6 @@
             },
             addCart() {
                 this.$store.dispatch('addCart', this.product).then(res => {
-                    console.log(this.$toast);
                     this.$toast.show(res)
                 })
             }
